@@ -29,7 +29,7 @@ function App() {
     }
   }, [user, location, navigate])
   return (
-    <div className="h-screen bg-slate-800 flex flex-col gap-2  items-center">
+    <div className="h-screen bg-[#f3f4f5] flex flex-col gap-2  items-center">
       <NavBar />
        <Routes>
         <Route path="/signup" element={<SignupForm />} />

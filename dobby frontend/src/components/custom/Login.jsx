@@ -4,6 +4,8 @@ import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Loader } from 'lucide-react'
+import { useState } from 'react'
 import {
   Form,
   FormControl,
@@ -22,8 +24,10 @@ import { useToast } from '../ui/use-toast'
 
 const formSchema = z.object({
 
+
   email: z.string().email({
     message: 'Invalid email address.',
+
   }),
   password: z.string().min(8, {
     message: 'Password must be at least 8 characters.',
@@ -32,6 +36,7 @@ const formSchema = z.object({
 })
 
 export function LoginForm() {
+  const [loading,setLoading]=useState(false)
     const navigate=useNavigate();
     const {user}= useSelector((state) => state.user)
     const dispatch = useDispatch()
@@ -53,7 +58,10 @@ export function LoginForm() {
   })
 
   async function onSubmit(values) {
+    setLoading(true);
+
     console.log(values)
+
     try{
         const res= await axios.post(`${apiUrl}/login`,{
           
@@ -66,8 +74,10 @@ export function LoginForm() {
             'Content-Type':'application/json'
           }
         }
-        )
+        ) 
+        setLoading(false);
         if(res.status===200){
+         
           dispatch(login(res.data.userRes))
           toast({
             title: "Login successfully",
@@ -79,8 +89,10 @@ export function LoginForm() {
     
         }
       catch(err){
+        setLoading(false);
         console.log(err,"error has been occured")
         if(err.response.status===400){
+
           toast({
             title: "Invalid email or password",
             description: "Please enter valid email and password",
@@ -151,15 +163,17 @@ export function LoginForm() {
           )}
         />
      
-        <Button type="submit" className="
+     <Button type="submit" className="
           bg-blue-500
           hover:bg-blue-700
           text-white
           font-bold
           py-2
           px-4
-          rounded
-        ">Submit</Button>
+          rounded"
+          disabled={loading}>
+          {loading ? <Loader size={20} /> : "Login"}
+        </Button>
         <div> Don't have an account?
         <Link to={"/signup"} className="text-blue-500"> Sign Up</Link>
         </div>

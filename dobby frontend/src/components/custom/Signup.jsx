@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
+
 import {
   Form,
   FormControl,
@@ -19,6 +20,8 @@ import { login } from '@/store/userSlice'
 import { apiUrl } from '@/lib/apiUrl'
 import { useDispatch } from 'react-redux'
 import { useToast } from '../ui/use-toast'
+import { useState } from 'react'
+import { Loader } from 'lucide-react'
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -36,6 +39,7 @@ const formSchema = z.object({
 })
 
 export function SignupForm() {
+  const [loading,setLoading]=useState(false)
   const navigate=useNavigate();
   const {user}= useSelector((state) => state.user)
   const dispatch = useDispatch()
@@ -57,6 +61,7 @@ export function SignupForm() {
   })
 
  async function onSubmit(values) {
+  setLoading(true);
     console.log(values)
     try{
     const res= await axios.post(`${apiUrl}/signup`,{
@@ -71,6 +76,7 @@ export function SignupForm() {
       }
     }
     )
+
     if(res.status===200){
       dispatch(login(res.data))
       toast({
@@ -83,6 +89,7 @@ export function SignupForm() {
 
     }
   catch(err){
+    setLoading(false);
     console.log(err,"eccur has been occurs")
     toast({
       title: "Signup failed",
@@ -104,7 +111,7 @@ export function SignupForm() {
       shadow-lg
       w-96
       border-2
-      
+     
       ">
         <FormField
           control={form.control}
@@ -158,15 +165,17 @@ export function SignupForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="
+       <Button type="submit" className="
           bg-blue-500
           hover:bg-blue-700
           text-white
           font-bold
           py-2
           px-4
-          rounded
-        ">Submit</Button>
+          rounded"
+          disabled={loading}>
+          {loading ? <Loader size={20} /> : "Signup"}
+        </Button>
         
         <div> Already have an Account? 
 

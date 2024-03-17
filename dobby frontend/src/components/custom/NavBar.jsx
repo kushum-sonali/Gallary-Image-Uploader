@@ -16,7 +16,7 @@ export default function NavBar() {
     return (
         <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6 justify-between">
             <Link className="mr-6" to={"/"}>
-                <GalleryThumbnails className="h-6 w-6 text-white" />
+                <GalleryThumbnails className="h-6 w-6 " />
                 <span className="sr-only">Image Gallery</span>
             </Link>
             <Sheet>
